@@ -25,11 +25,11 @@ export default {
         }
       },
     }
-    if (url.pathname === '/oauth2/start/google') return oauth2Start(request, env, 'google', oauth2Providers, env.GOOGLE_REDIRECT_URI)
-    if (url.pathname === '/oauth2/callback/google') return oauth2Callback(request, env, 'google', oauth2Providers, env.GOOGLE_REDIRECT_URI, env.GOOGLE_REDIRECT_TO)
-    if (url.pathname === '/oauth2/login/google') return oauth2Login(request, env, oauth2Providers, 'google')
-    if (url.pathname === '/oauth2/me') return oauth2Me(request, env, oauth2Providers)
-    if (url.pathname === '/oauth2/logout') return oauth2Logout(request, env, oauth2Providers)
+    if (url.pathname === '/api/oauth2/start/google') return oauth2Start(request, env, 'google', oauth2Providers, env.GOOGLE_REDIRECT_URI)
+    if (url.pathname === '/api/oauth2/callback/google') return oauth2Callback(request, env, 'google', oauth2Providers, env.GOOGLE_REDIRECT_URI, env.GOOGLE_REDIRECT_TO)
+    if (url.pathname === '/api/oauth2/login/google') return oauth2Login(request, env, oauth2Providers, 'google')
+    if (url.pathname === '/api/oauth2/me') return oauth2Me(request, env, oauth2Providers)
+    if (url.pathname === '/api/oauth2/logout') return oauth2Logout(request, env, oauth2Providers)
 
     return new Response('Not Found', { status: 404 })
   },
