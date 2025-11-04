@@ -1,5 +1,5 @@
-import { makeAppleClientSecret, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
-import { oauth2Callback } from './handlers/callback'
+import { makeAppleClientSecret, oauth2Callback, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
+import { appleOauth2Callback } from './handlers/callback'
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
@@ -47,7 +47,7 @@ export default {
     if (url.pathname === '/api/oauth2/login/google') return oauth2Login(request, env, oauth2Providers, 'google')
 
     if (url.pathname === '/api/oauth2/start/apple') return oauth2Start(request, env, 'apple', oauth2Providers, env.APPLE_REDIRECT_URI)
-    if (url.pathname === '/api/oauth2/callback/apple') return oauth2Callback(request, env, 'apple', oauth2Providers, env.APPLE_REDIRECT_URI, env.OAUTH_REDIRECT_TO)
+    if (url.pathname === '/api/oauth2/callback/apple') return appleOauth2Callback(request, env)
     if (url.pathname === '/api/oauth2/login/apple') return oauth2Login(request, env, oauth2Providers, 'apple')
 
     if (url.pathname === '/api/oauth2/me') return oauth2Me(request, env, oauth2Providers)
