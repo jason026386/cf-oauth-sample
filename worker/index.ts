@@ -31,7 +31,6 @@ export default {
         auth_url: 'https://appleid.apple.com/auth/authorize',
         response_mode: 'form_post',
         token_url: 'https://appleid.apple.com/auth/token',
-        userinfo_url: '',
         scope: 'openid email name',
         oidc: {
           issuer: 'https://appleid.apple.com',
