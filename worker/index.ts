@@ -1,4 +1,5 @@
-import { makeAppleClientSecret, oauth2Callback, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
+import { makeAppleClientSecret, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
+import { oauth2Callback } from './handlers/callback'
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
