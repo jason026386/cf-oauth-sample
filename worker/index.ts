@@ -34,7 +34,8 @@ export default {
       apple: {
         client_id: env.APPLE_CLIENT_ID,
         client_secret: appleClientSecret,
-        auth_url: 'https://appleid.apple.com/auth/authorize?response_type=code&response_mode=form_post',
+        auth_url: 'https://appleid.apple.com/auth/authorize',
+        response_mode: 'form_post',
         token_url: 'https://appleid.apple.com/auth/token',
         userinfo_url: '',
         scope: 'openid email name',
