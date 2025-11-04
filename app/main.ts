@@ -50,5 +50,9 @@ document.body.append(
     onclick: () => {
       window.location.href = '/api/oauth2/start/google'
     }
+  }), el('button', 'Login with Apple', {
+    onclick: () => {
+      window.location.href = '/api/oauth2/start/apple'
+    }
   })])
 )
