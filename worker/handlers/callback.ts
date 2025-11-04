@@ -1,4 +1,8 @@
 import { z } from 'zod'
+import { jsonWithCors } from '../utils/response'
+import { TxnRecord } from '../types/txn'
+import { StatePayload } from '../types/state'
+import { fromBase64UrlToJSON } from '../utils/pkce'
 
 // Cloudflare Workers의 SubtleCrypto + JOSE 없이 순정 WebCrypto로 ES256 서명 예시
 export async function makeAppleClientSecret({
@@ -240,11 +244,11 @@ export function zParse<T>(schema: z.ZodType<T>, input: unknown) {
 }
 
 export async function appleOauth2Callback(request: Request, env: Env) {
-  const url = new URL(request.url)
+    const url = new URL(request.url)
 
   // 1) form_post 방식 우선
   let code: string | null = null
-  let state: string | null = null
+  let stateRaw: string | null = null
 
   if (request.method === 'POST') {
     const ct = request.headers.get('content-type') || ''
@@ -252,40 +256,37 @@ export async function appleOauth2Callback(request: Request, env: Env) {
       const body = await request.text()
       const params = new URLSearchParams(body)
       code = params.get('code')
-      state = params.get('state')
+      stateRaw = params.get('state')
     }
   }
 
   // 2) fallback: query string 처리
-  if (!code || !state) {
+  if (!code || !stateRaw) {
     code = url.searchParams.get('code')
-    state = url.searchParams.get('state')
+    stateRaw = url.searchParams.get('state')
   }
 
-  // 3) 유효성 검증
-  const schema = z.object({ code: z.string().min(1), state: z.string().min(10) })
-  const parsed = schema.safeParse({ code, state })
-  if (!parsed.success) {
-    return Response.json({ error: parsed.error.message }, { status: 400 })
+  if (!code || !stateRaw) {
+    return jsonWithCors({ error: 'Missing code or state' }, 400)
   }
 
-  // 4) state 검증 (쿠키 사용 X)
-  const [payload, sig] = parsed.data.state.split('.')
-  if (!payload || !sig) {
-    return Response.json({ error: 'invalid_state' }, { status: 400 })
+  // 1) state 파싱 및 기본 검증
+  let parsed: StatePayload
+  try {
+    parsed = fromBase64UrlToJSON<StatePayload>(stateRaw)
+  } catch {
+    return jsonWithCors({ error: 'Invalid state' }, 400)
   }
+  const { s: csrf, t: txnId, p: providerFromState } = parsed || ({} as StatePayload)
+  if (!csrf || !txnId) return jsonWithCors({ error: 'Invalid state payload' }, 400)
 
-  const ok = await hmacVerify(env, payload, sig).catch(() => false)
-  if (!ok) {
-    return Response.json({ error: 'invalid_signature' }, { status: 400 })
-  }
+  // 2) TXN 조회 및 검증
+  const txnKey = `txn:${txnId}`
+  const txnJSON = await env.TXNS.get(txnKey)
+  if (!txnJSON) return jsonWithCors({ error: 'Transaction expired' }, 400)
+  const txn = JSON.parse(txnJSON) as TxnRecord
 
-  const tmp = JSON.parse(
-    atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
-  )
-  if (!tmp.exp || tmp.exp < Math.floor(Date.now() / 1000)) {
-    return Response.json({ error: 'state_expired' }, { status: 400 })
-  }
+  if (txn.csrf !== csrf) return jsonWithCors({ error: 'CSRF mismatch' }, 400)
 
   // 5) 토큰 교환
   const clientSecret = await makeAppleClientSecret({
@@ -296,11 +297,11 @@ export async function appleOauth2Callback(request: Request, env: Env) {
   })
 
   const token = await exchangeCodeForTokensApple({
-    code: parsed.data.code,
+    code: code,
     clientId: env.APPLE_CLIENT_ID,
     clientSecret,
     redirectUri: env.APPLE_REDIRECT_URI,
-    codeVerifier: tmp.code_verifier,
+    codeVerifier: txn.code_verifier,
   }).catch((e: any) => ({ error: e?.message || 'exchange_failed' }))
 
   if ((token as any).error) {
