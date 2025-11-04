@@ -29,7 +29,7 @@
 		"GOOGLE_CLIENT_ID": "236925975734-k24trb8j8bo5p0mojlau3bjg0qa2f7q0.apps.googleusercontent.com",
 		"GOOGLE_REDIRECT_URI": "https://cf-oauth-sample.yj-publishing.workers.dev/api/oauth2/callback/google",
 		"APPLE_TEAM_ID": "UJ82GS2C87",
-		"APPLE_KEY_ID": "5568WNYKY3",
+		"APPLE_KEY_ID": "9D7FWJXBK9",
 		"APPLE_CLIENT_ID": "yjpublishing.mc2d.service",
 		"APPLE_REDIRECT_URI": "https://cf-oauth-sample.yj-publishing.workers.dev/api/oauth2/callback/apple",
 		"OAUTH_REDIRECT_TO": "https://cf-oauth-sample.yj-publishing.workers.dev"
@@ -52,7 +52,7 @@
 				"GOOGLE_CLIENT_ID": "236925975734-k24trb8j8bo5p0mojlau3bjg0qa2f7q0.apps.googleusercontent.com",
 				"GOOGLE_REDIRECT_URI": "http://localhost:8081/api/oauth2/callback/google",
 				"APPLE_TEAM_ID": "UJ82GS2C87",
-				"APPLE_KEY_ID": "5568WNYKY3",
+				"APPLE_KEY_ID": "9D7FWJXBK9",
 				"APPLE_CLIENT_ID": "yjpublishing.mc2d.service",
 				"APPLE_REDIRECT_URI": "http://localhost:8081/api/oauth2/callback/apple",
 				"OAUTH_REDIRECT_TO": "http://localhost:8081"
