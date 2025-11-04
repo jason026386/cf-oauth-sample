@@ -1,9 +1,20 @@
-import { oauth2Callback, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
+import { makeAppleClientSecret, oauth2Callback, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
+
+let appleClientSecret: string | null = null
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
 
     const url = new URL(request.url)
+
+    if (!appleClientSecret) {
+      appleClientSecret = await makeAppleClientSecret({
+        teamId: env.APPLE_TEAM_ID,
+        keyId: env.APPLE_KEY_ID,
+        clientId: env.APPLE_CLIENT_ID,
+        privateKeyPem: env.APPLE_PRIVATE_KEY_PEM,
+      })
+    }
 
     // OAuth2
     const oauth2Providers = {
@@ -20,10 +31,29 @@ export default {
           require_email_verified: false,
         }
       },
+      apple: {
+        client_id: env.APPLE_CLIENT_ID,
+        client_secret: appleClientSecret,
+        auth_url: 'https://appleid.apple.com/auth/authorize',
+        token_url: 'https://appleid.apple.com/auth/token',
+        userinfo_url: '',
+        scope: 'openid email name',
+        oidc: {
+          issuer: 'https://appleid.apple.com',
+          discovery: 'https://appleid.apple.com/.well-known/openid-configuration',
+          require_email_verified: true,
+        },
+      },
     }
+
     if (url.pathname === '/api/oauth2/start/google') return oauth2Start(request, env, 'google', oauth2Providers, env.GOOGLE_REDIRECT_URI)
-    if (url.pathname === '/api/oauth2/callback/google') return oauth2Callback(request, env, 'google', oauth2Providers, env.GOOGLE_REDIRECT_URI, env.GOOGLE_REDIRECT_TO)
+    if (url.pathname === '/api/oauth2/callback/google') return oauth2Callback(request, env, 'google', oauth2Providers, env.GOOGLE_REDIRECT_URI, env.OAUTH_REDIRECT_TO)
     if (url.pathname === '/api/oauth2/login/google') return oauth2Login(request, env, oauth2Providers, 'google')
+
+    if (url.pathname === '/api/oauth2/start/apple') return oauth2Start(request, env, 'apple', oauth2Providers, env.APPLE_REDIRECT_URI)
+    if (url.pathname === '/api/oauth2/callback/apple') return oauth2Callback(request, env, 'apple', oauth2Providers, env.APPLE_REDIRECT_URI, env.OAUTH_REDIRECT_TO)
+    if (url.pathname === '/api/oauth2/login/apple') return oauth2Login(request, env, oauth2Providers, 'apple')
+
     if (url.pathname === '/api/oauth2/me') return oauth2Me(request, env, oauth2Providers)
     if (url.pathname === '/api/oauth2/logout') return oauth2Logout(request, env, oauth2Providers)
 
