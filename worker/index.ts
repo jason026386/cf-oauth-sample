@@ -1,8 +1,4 @@
-import { oauth2Callback } from './handlers/callback'
-import { oauth2Login } from './handlers/login'
-import { oauth2Logout } from './handlers/logout'
-import { oauth2Me } from './handlers/me'
-import { oauth2Start } from './handlers/start'
+import { oauth2Callback, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
