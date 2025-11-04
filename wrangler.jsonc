@@ -13,7 +13,42 @@
 	"observability": {
 		"enabled": true
 	},
+	"kv_namespaces": [
+		{
+			"binding": "TXNS",
+			"id": "3158f7c170af43c1bd71e9d66801deb2",
+			"preview_id": "faf8763542004cfaa8cf2d2842e776f5"
+		},
+		{
+			"binding": "SESSIONS",
+			"id": "072c50db6ea04ee6a5e09f98e48108f3",
+			"preview_id": "705d121c002b40eeb70b6ba69c63ce28"
+		}
+	],
+	"vars": {
+		"GOOGLE_CLIENT_ID": "236925975734-k24trb8j8bo5p0mojlau3bjg0qa2f7q0.apps.googleusercontent.com",
+		"GOOGLE_REDIRECT_URI": "http://localhost:8081/oauth2/callback/google",
+		"GOOGLE_REDIRECT_TO": "http://localhost:8081"
+	},
 	"env": {
-		"development": {}
+		"development": {
+			"kv_namespaces": [
+				{
+					"binding": "TXNS",
+					"id": "3158f7c170af43c1bd71e9d66801deb2",
+					"preview_id": "faf8763542004cfaa8cf2d2842e776f5"
+				},
+				{
+					"binding": "SESSIONS",
+					"id": "072c50db6ea04ee6a5e09f98e48108f3",
+					"preview_id": "705d121c002b40eeb70b6ba69c63ce28"
+				}
+			],
+			"vars": {
+				"GOOGLE_CLIENT_ID": "236925975734-k24trb8j8bo5p0mojlau3bjg0qa2f7q0.apps.googleusercontent.com",
+				"GOOGLE_REDIRECT_URI": "http://localhost:8081/oauth2/callback/google",
+				"GOOGLE_REDIRECT_TO": "http://localhost:8081"
+			}
+		}
 	}
 }
