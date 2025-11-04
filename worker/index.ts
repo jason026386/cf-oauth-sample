@@ -1,20 +1,9 @@
 import { makeAppleClientSecret, oauth2Callback, oauth2Login, oauth2Logout, oauth2Me, oauth2Start } from 'cf-oauth'
 
-let appleClientSecret: string | null = null
-
 export default {
   async fetch(request, env, ctx): Promise<Response> {
 
     const url = new URL(request.url)
-
-    if (!appleClientSecret) {
-      appleClientSecret = await makeAppleClientSecret({
-        teamId: env.APPLE_TEAM_ID,
-        keyId: env.APPLE_KEY_ID,
-        clientId: env.APPLE_CLIENT_ID,
-        privateKeyPem: env.APPLE_PRIVATE_KEY_PEM,
-      })
-    }
 
     // OAuth2
     const oauth2Providers = {
@@ -33,7 +22,12 @@ export default {
       },
       apple: {
         client_id: env.APPLE_CLIENT_ID,
-        client_secret: appleClientSecret,
+        client_secret: await makeAppleClientSecret({
+          teamId: env.APPLE_TEAM_ID,
+          keyId: env.APPLE_KEY_ID,
+          clientId: env.APPLE_CLIENT_ID,
+          privateKeyPem: env.APPLE_PRIVATE_KEY_PEM,
+        }),
         auth_url: 'https://appleid.apple.com/auth/authorize',
         response_mode: 'form_post',
         token_url: 'https://appleid.apple.com/auth/token',
