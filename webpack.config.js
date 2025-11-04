@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack')
 
 module.exports = {
-  entry: './game/main.ts',
+  entry: './app/main.ts',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, './public')
@@ -15,7 +15,7 @@ module.exports = {
         use: {
           loader: 'ts-loader',
           options: {
-            configFile: 'tsconfig.game.json',
+            configFile: 'tsconfig.app.json',
           }
         },
         exclude: /node_modules/
