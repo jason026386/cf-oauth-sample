@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "NODE_ENV=production webpack --mode=production && cpy \"public/**\" android/app/src/main/assets/web --cwd=. --parents && cpy \"public/**\" ios/WebViewApp/WebAssets/web --cwd=. --parents",
-    "dev": "concurrently -k \"webpack --watch --mode=development\" \"wrangler dev --env development --port=8081\"",
-    "start": "concurrently -k \"webpack --watch --mode=development\" \"wrangler dev --env development --port=8081\"",
+    "dev": "concurrently -k \"webpack --watch --mode=development\" \"wrangler dev -c wrangler.dev.jsonc --port=8081\"",
+    "start": "concurrently -k \"webpack --watch --mode=development\" \"wrangler dev -c wrangler.dev.jsonc --port=8081\"",
     "test": "vitest",
     "cf-typegen": "wrangler types"
   },
